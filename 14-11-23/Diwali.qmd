@@ -1,0 +1,85 @@
+---
+title: "tiduesday 14-11-23"
+author: "Mak"
+format: html
+editor: visual
+---
+
+## Tiduesday
+
+Import required library
+
+```{r}
+library(tidyverse)
+```
+
+Import dataset
+
+```{r}
+house <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-11-14/diwali_sales_data.csv')
+
+```
+
+Descriptive statistics
+
+```{r}
+house %>% 
+  select(Age,Amount) %>% 
+  summary()
+```
+
+```{r}
+table(house['Gender'])
+```
+
+```{r}
+a = as.data.frame(table(house['Age Group']))
+ggplot(a, aes(x = Age.Group, y = Freq)) +
+  geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+  geom_text(aes(label = Freq), vjust = -0.5, color = "black", size = 3) +  # 
+  labs(title = "Frequency of Age Groups", 
+       x = "Age Group", 
+       y = "Frequency") +
+  theme_minimal() +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for better readability
+  theme(axis.text = element_text(size = 10),  # Increase text size for axis labels
+        axis.title = element_text(size = 12),  # Increase text size for axis titles
+        plot.title = element_text(size = 14, hjust = 0.5)) 
+
+```
+
+Top 10 des produits les plus vendus
+
+```{r}
+top_10 <- as.data.frame(table(house['Product_ID']))
+top_10 <-arrange(top_10, desc(Freq))
+top10<-top_10[1:10,]
+
+
+#plot
+ggplot(top10, aes(x = Freq, y = Product_ID)) +
+  geom_bar(stat = "identity", fill = "darkred", color = "black") +
+  geom_text(aes(label = Freq), hjust = -0.2, color = "black", size = 3) +
+  labs(title = "Top 10 Most Frequent Products", 
+       x = "Frequency", 
+       y = "Product ID") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(size = 10),  
+        axis.title = element_text(size = 12),  
+        plot.title = element_text(size = 14, hjust = 0.5))
+
+```
+
+```{r warning=F}
+library(ggplot2)
+
+ggplot(house, aes(State, Product_Category, fill = Amount)) + 
+  geom_tile(color = "white", size = 0.2) +
+  labs(title = "Amount Products Heatmap by State and Product Category",
+       x = "State",
+       y = "Product Category") +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +  # Adjust color gradient
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 7.5, angle = 90, hjust = 1))
+
+```
